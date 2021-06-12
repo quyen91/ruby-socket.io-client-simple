@@ -13,7 +13,7 @@ module SocketIO
         alias_method :__emit, :emit
 
         attr_accessor :auto_reconnection, :websocket, :url, :reconnecting, :state,
-                      :session_id, :ping_interval, :ping_timeout, :last_pong_at, :last_ping_at
+                      :session_id, :ping_interval, :ping_timeout, :last_pong_at, :last_ping_at, :current_thread
 
         def initialize(url, opts={})
           @url = url
