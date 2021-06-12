@@ -22,8 +22,10 @@ module SocketIO
           @reconnecting = false
           @state = :disconnect
           @auto_reconnection = true
+          @current_thread = nil
 
-          new_thread = Thread.new do
+          Thread.new do
+            @current_thread = Thread.current
             loop do
               if @websocket
                 if @state == :connect
@@ -42,9 +44,6 @@ module SocketIO
               sleep 1
             end
           end
-
-          # release thread after done
-          new_thread.join
         end
 
 
@@ -128,6 +127,11 @@ module SocketIO
           @state = :disconnect
         end
 
+        def release_thread
+          @current_thread.join if @current_thread
+        rescue
+          nil
+        end
       end
 
     end
