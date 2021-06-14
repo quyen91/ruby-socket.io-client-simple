@@ -24,7 +24,8 @@ module SocketIO
           @auto_reconnection = true
           @current_thread = nil
 
-          Thread.new do
+          new_thread = Thread.new do
+            Timeout::timeout(180) {
             @current_thread = Thread.current
             loop do
               if @websocket
@@ -43,7 +44,13 @@ module SocketIO
               end
               sleep 1
             end
+            }
           end
+
+          (new_thread.kill.join rescue nil) if new_thread.present?
+        rescue => e
+          (new_thread.kill.join rescue nil) if new_thread.present?
+          raise e
         end
 
 
